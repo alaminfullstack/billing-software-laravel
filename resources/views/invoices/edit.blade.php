@@ -48,29 +48,29 @@
                                                 <div class="row g-3">
                                                     <div class="col-md-4">
                                                         <label for="items[{{ $index }}][description]" class="form-label">Description *</label>
-                                                        <input type="text" name="items[{{ $index }}][description]" 
+                                                        <input type="text" name="invoice_items[{{ $index }}][description]" 
                                                                id="items[{{ $index }}][description]" 
                                                                class="form-control" 
                                                                value="{{ $item->description }}" required>
-                                                        <input type="hidden" name="items[{{ $index }}][id]" value="{{ $item->id }}">
+                                                        <input type="hidden" name="invoice_items[{{ $index }}][id]" value="{{ $item->id }}">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label for="items[{{ $index }}][quantity]" class="form-label">Quantity *</label>
-                                                        <input type="number" name="items[{{ $index }}][quantity]" 
+                                                        <input type="number" name="invoice_items[{{ $index }}][quantity]" 
                                                                id="items[{{ $index }}][quantity]" 
                                                                class="form-control item-quantity" 
                                                                value="{{ $item->quantity }}" min="1" step="0.01" required>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label for="items[{{ $index }}][unit_price]" class="form-label">Unit Price *</label>
-                                                        <input type="number" name="items[{{ $index }}][unit_price]" 
+                                                        <input type="number" name="invoice_items[{{ $index }}][unit_price]" 
                                                                id="items[{{ $index }}][unit_price]" 
                                                                class="form-control item-price" 
                                                                value="{{ $item->unit_price }}" min="0" step="0.01" required>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label for="items[{{ $index }}][tax_rate]" class="form-label">Tax Rate (%)</label>
-                                                        <input type="number" name="items[{{ $index }}][tax_rate]" 
+                                                        <input type="number" name="invoice_items[{{ $index }}][tax_rate]" 
                                                                id="items[{{ $index }}][tax_rate]" 
                                                                class="form-control item-tax" 
                                                                value="{{ $item->tax_rate ?? 0 }}" min="0" step="0.01">
@@ -331,10 +331,10 @@ $(document).ready(function() {
         const newItem = $(template);
         
         // Update name attributes
-        newItem.find('input[name="items[0][description]"]').attr('name', `items[${itemCount}][description]`);
-        newItem.find('input[name="items[0][quantity]"]').attr('name', `items[${itemCount}][quantity]`);
-        newItem.find('input[name="items[0][unit_price]"]').attr('name', `items[${itemCount}][unit_price]`);
-        newItem.find('input[name="items[0][tax_rate]"]').attr('name', `items[${itemCount}][tax_rate]`);
+        newItem.find('input[name="invoice_items[0][description]"]').attr('name', `invoice_items[${itemCount}][description]`);
+        newItem.find('input[name="invoice_items[0][quantity]"]').attr('name', `invoice_items[${itemCount}][quantity]`);
+        newItem.find('input[name="invoice_items[0][unit_price]"]').attr('name', `invoice_items[${itemCount}][unit_price]`);
+        newItem.find('input[name="invoice_items[0][tax_rate]"]').attr('name', `invoice_items[${itemCount}][tax_rate]`);
         
         $('#invoice-items').append(newItem);
         itemCount++;

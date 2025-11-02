@@ -18,11 +18,13 @@
                                 <i class="fas fa-edit"></i> Edit
                             </a>
                             @if($invoice->status == 'draft')
-                                <a href="{{ route('invoices.approve', $invoice) }}" 
-                                   class="btn btn-success"
-                                   onclick="return confirm('Are you sure you want to approve this invoice?')">
-                                    <i class="fas fa-check"></i> Approve
-                                </a>
+                                <form method="POST" action="{{ route('invoices.approve', $invoice) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to approve this invoice?')">
+                                    @csrf
+                                    @method('POST')
+                                    <button type="submit" class="btn btn-success">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                </form>
                             @endif
                             @if($invoice->status == 'sent')
                                 <a href="{{ route('invoices.send', $invoice) }}" class="btn btn-info">
@@ -68,14 +70,18 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <h6 class="text-muted">Invoice Date</h6>
-                                        <p>{{ $invoice->invoice_date->format('M d, Y') }}</p>
+                                        <p>{{ $invoice->issue_date ? $invoice->issue_date->format('M d, Y') : 'N/A' }}</p>
                                     </div>
                                     <div class="col-md-6">
                                         <h6 class="text-muted">Due Date</h6>
-                                        <p class="{{ $invoice->due_date->isPast() && $invoice->status != 'paid' ? 'text-danger fw-bold' : '' }}">
-                                            {{ $invoice->due_date->format('M d, Y') }}
-                                            @if($invoice->due_date->isPast() && $invoice->status != 'paid')
-                                                <small class="text-danger">(Overdue)</small>
+                                        <p class="{{ $invoice->due_date && $invoice->due_date->isPast() && $invoice->status != 'paid' ? 'text-danger fw-bold' : '' }}">
+                                            @if($invoice->due_date)
+                                                {{ $invoice->due_date->format('M d, Y') }}
+                                                @if($invoice->due_date->isPast() && $invoice->status != 'paid')
+                                                    <small class="text-danger">(Overdue)</small>
+                                                @endif
+                                            @else
+                                                N/A
                                             @endif
                                         </p>
                                     </div>
@@ -280,24 +286,31 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach($invoice->payments as $payment)
+                                        @if($invoice->payments && count($invoice->payments) > 0)
+                                            @foreach($invoice->payments as $payment)
+                                                <tr>
+                                                    <td>{{ $payment->payment_date ? $payment->payment_date->format('M d, Y') : 'N/A' }}</td>
+                                                    <td class="text-success">${{ number_format($payment->amount, 2) }}</td>
+                                                    <td>{{ ucfirst($payment->payment_method) }}</td>
+                                                    <td>{{ $payment->reference_number ?? 'N/A' }}</td>
+                                                    <td>
+                                                        @php
+                                                            $paymentStatus = $payment->status ?? 'completed';
+                                                            $paymentStatusClass = [
+                                                                'completed' => 'success',
+                                                                'pending' => 'warning',
+                                                                'failed' => 'danger'
+                                                            ][$paymentStatus] ?? 'secondary';
+                                                        @endphp
+                                                        <span class="badge bg-{{ $paymentStatusClass }}">{{ ucfirst($paymentStatus) }}</span>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @else
                                             <tr>
-                                                <td>{{ $payment->payment_date->format('M d, Y') }}</td>
-                                                <td class="text-success">${{ number_format($payment->amount, 2) }}</td>
-                                                <td>{{ ucfirst($payment->payment_method) }}</td>
-                                                <td>{{ $payment->reference_number ?? 'N/A' }}</td>
-                                                <td>
-                                                    @php
-                                                        $paymentStatusClass = [
-                                                            'completed' => 'success',
-                                                            'pending' => 'warning',
-                                                            'failed' => 'danger'
-                                                        ][$payment->status] ?? 'secondary';
-                                                    @endphp
-                                                    <span class="badge bg-{{ $paymentStatusClass }}">{{ ucfirst($payment->status) }}</span>
-                                                </td>
+                                                <td colspan="5" class="text-center text-muted">No payments recorded for this invoice.</td>
                                             </tr>
-                                        @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>

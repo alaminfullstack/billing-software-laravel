@@ -36,6 +36,7 @@
                             <select name="status" id="status" class="form-select">
                                 <option value="">All Statuses</option>
                                 <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
                                 <option value="sent" {{ request('status') == 'sent' ? 'selected' : '' }}>Sent</option>
                                 <option value="paid" {{ request('status') == 'paid' ? 'selected' : '' }}>Paid</option>
                                 <option value="overdue" {{ request('status') == 'overdue' ? 'selected' : '' }}>Overdue</option>
@@ -100,19 +101,24 @@
                                                     {{ $invoice->customer->name ?? 'N/A' }}
                                                 </a>
                                             </td>
-                                            <td>{{ $invoice->invoice_date->format('M d, Y') }}</td>
+                                            <td>{{ $invoice->issue_date ? $invoice->issue_date->format('M d, Y') : 'N/A' }}</td>
                                             <td>
-                                                <span class="{{ $invoice->due_date->isPast() && $invoice->status != 'paid' ? 'text-danger' : '' }}">
-                                                    {{ $invoice->due_date->format('M d, Y') }}
-                                                </span>
+                                                @if($invoice->due_date)
+                                                    <span class="{{ $invoice->due_date->isPast() && $invoice->status != 'paid' ? 'text-danger' : '' }}">
+                                                        {{ $invoice->due_date->format('M d, Y') }}
+                                                    </span>
+                                                @else
+                                                    N/A
+                                                @endif
                                             </td>
                                             <td>
-                                                <strong>${{ number_format($invoice->total, 2) }}</strong>
+                                                <strong>${{ number_format($invoice->total_amount, 2) }}</strong>
                                             </td>
                                             <td>
                                                 @php
                                                     $statusClass = [
                                                         'draft' => 'secondary',
+                                                        'approved' => 'primary',
                                                         'sent' => 'info',
                                                         'paid' => 'success',
                                                         'overdue' => 'danger'
@@ -137,11 +143,13 @@
                                                         </a>
                                                     @endif
                                                     @if($invoice->status == 'draft')
-                                                        <a href="{{ route('invoices.approve', $invoice) }}" 
-                                                           class="btn btn-sm btn-outline-success" title="Approve"
-                                                           onclick="return confirm('Are you sure you want to approve this invoice?')">
-                                                            <i class="fas fa-check"></i>
-                                                        </a>
+                                                        <form method="POST" action="{{ route('invoices.approve', $invoice) }}" style="display: inline;" onsubmit="return confirm('Are you sure you want to approve this invoice?')">
+                                                            @csrf
+                                                            @method('POST')
+                                                            <button type="submit" class="btn btn-sm btn-outline-success" title="Approve">
+                                                                <i class="fas fa-check"></i>
+                                                            </button>
+                                                        </form>
                                                     @endif
                                                     <form method="POST" action="{{ route('invoices.destroy', $invoice) }}" 
                                                           style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this invoice?')">

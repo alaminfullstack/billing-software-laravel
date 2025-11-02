@@ -39,24 +39,24 @@
                                     <div class="invoice-item mb-3 border rounded p-3">
                                         <div class="row g-3">
                                             <div class="col-md-4">
-                                                <label for="items[0][description]" class="form-label">Description *</label>
-                                                <input type="text" name="items[0][description]" id="items[0][description]" 
+                                                <label for="invoice_items[0][description]" class="form-label">Description *</label>
+                                                <input type="text" name="invoice_items[0][description]" id="invoice_items[0][description]" 
                                                        class="form-control" placeholder="Item description" required>
                                             </div>
                                             <div class="col-md-2">
-                                                <label for="items[0][quantity]" class="form-label">Quantity *</label>
-                                                <input type="number" name="items[0][quantity]" id="items[0][quantity]" 
-                                                       class="form-control" value="1" min="1" step="0.01" required>
+                                                <label for="invoice_items[0][quantity]" class="form-label">Quantity *</label>
+                                                <input type="number" name="invoice_items[0][quantity]" id="invoice_items[0][quantity]" 
+                                                       class="form-control item-quantity" value="1" min="1" step="0.01" required>
                                             </div>
                                             <div class="col-md-2">
-                                                <label for="items[0][unit_price]" class="form-label">Unit Price *</label>
-                                                <input type="number" name="items[0][unit_price]" id="items[0][unit_price]" 
-                                                       class="form-control" value="0.00" min="0" step="0.01" required>
+                                                <label for="invoice_items[0][unit_price]" class="form-label">Unit Price *</label>
+                                                <input type="number" name="invoice_items[0][unit_price]" id="invoice_items[0][unit_price]" 
+                                                       class="form-control item-price" value="0.00" min="0" step="0.01" required>
                                             </div>
                                             <div class="col-md-2">
-                                                <label for="items[0][tax_rate]" class="form-label">Tax Rate (%)</label>
-                                                <input type="number" name="items[0][tax_rate]" id="items[0][tax_rate]" 
-                                                       class="form-control" value="0" min="0" step="0.01">
+                                                <label for="invoice_items[0][tax_rate]" class="form-label">Tax Rate (%)</label>
+                                                <input type="number" name="invoice_items[0][tax_rate]" id="invoice_items[0][tax_rate]" 
+                                                       class="form-control item-tax" value="0" min="0" step="0.01">
                                             </div>
                                             <div class="col-md-2 d-flex align-items-end">
                                                 <button type="button" class="btn btn-danger w-100 remove-item" disabled>
@@ -113,8 +113,8 @@
                                 <div class="row">
                                     <div class="col-6">
                                         <div class="mb-3">
-                                            <label for="invoice_date" class="form-label">Invoice Date *</label>
-                                            <input type="date" name="invoice_date" id="invoice_date" 
+                                            <label for="issue_date" class="form-label">Invoice Date *</label>
+                                            <input type="date" name="issue_date" id="issue_date" 
                                                    class="form-control" value="{{ date('Y-m-d') }}" required>
                                         </div>
                                     </div>
@@ -136,19 +136,9 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="discount_type" class="form-label">Discount Type</label>
-                                    <select name="discount_type" id="discount_type" class="form-select">
-                                        <option value="none">No Discount</option>
-                                        <option value="percentage">Percentage</option>
-                                        <option value="fixed">Fixed Amount</option>
-                                    </select>
-                                </div>
-
-                                <div class="mb-3" id="discount-field" style="display: none;">
-                                    <label for="discount_value" class="form-label">Discount Value</label>
-                                    <input type="number" name="discount_value" id="discount_value" 
+                                    <label for="discount_amount" class="form-label">Discount Amount</label>
+                                    <input type="number" name="discount_amount" id="discount_amount" 
                                            class="form-control" value="0" min="0" step="0.01">
-                                    <small class="form-text text-muted" id="discount-help">Enter discount amount</small>
                                 </div>
 
                                 <div class="mb-3">
@@ -215,19 +205,19 @@
         <div class="row g-3">
             <div class="col-md-4">
                 <label class="form-label">Description *</label>
-                <input type="text" class="form-control item-description" placeholder="Item description" required>
+                <input type="text" class="form-control item-description" name="invoice_items[0][description]" placeholder="Item description" required>
             </div>
             <div class="col-md-2">
                 <label class="form-label">Quantity *</label>
-                <input type="number" class="form-control item-quantity" value="1" min="1" step="0.01" required>
+                <input type="number" class="form-control item-quantity" name="invoice_items[0][quantity]" value="1" min="1" step="0.01" required>
             </div>
             <div class="col-md-2">
                 <label class="form-label">Unit Price *</label>
-                <input type="number" class="form-control item-price" value="0.00" min="0" step="0.01" required>
+                <input type="number" class="form-control item-price" name="invoice_items[0][unit_price]" value="0.00" min="0" step="0.01" required>
             </div>
             <div class="col-md-2">
                 <label class="form-label">Tax Rate (%)</label>
-                <input type="number" class="form-control item-tax" value="0" min="0" step="0.01">
+                <input type="number" class="form-control item-tax" name="invoice_items[0][tax_rate]" value="0" min="0" step="0.01">
             </div>
             <div class="col-md-2 d-flex align-items-end">
                 <button type="button" class="btn btn-danger w-100 remove-item">
@@ -249,10 +239,10 @@ $(document).ready(function() {
         const newItem = $(template);
         
         // Update name attributes
-        newItem.find('input[name="items[0][description]"]').attr('name', `items[${itemCount}][description]`);
-        newItem.find('input[name="items[0][quantity]"]').attr('name', `items[${itemCount}][quantity]`);
-        newItem.find('input[name="items[0][unit_price]"]').attr('name', `items[${itemCount}][unit_price]`);
-        newItem.find('input[name="items[0][tax_rate]"]').attr('name', `items[${itemCount}][tax_rate]`);
+        newItem.find('input[name="invoice_items[0][description]"]').attr('name', `invoice_items[${itemCount}][description]`);
+        newItem.find('input[name="invoice_items[0][quantity]"]').attr('name', `invoice_items[${itemCount}][quantity]`);
+        newItem.find('input[name="invoice_items[0][unit_price]"]').attr('name', `invoice_items[${itemCount}][unit_price]`);
+        newItem.find('input[name="invoice_items[0][tax_rate]"]').attr('name', `invoice_items[${itemCount}][tax_rate]`);
         
         $('#invoice-items').append(newItem);
         itemCount++;
@@ -269,33 +259,9 @@ $(document).ready(function() {
     });
 
     // Calculate totals when inputs change
-    $(document).on('input', '.item-quantity, .item-price, .item-tax, #discount_value, #tax_rate', function() {
+    $(document).on('input', '.item-quantity, .item-price, .item-tax, #discount_amount', function() {
         calculateTotals();
     });
-
-    // Discount type change
-    $('#discount_type').change(function() {
-        const discountType = $(this).val();
-        if (discountType === 'none') {
-            $('#discount-field').hide();
-            $('#discount-row').hide();
-        } else {
-            $('#discount-field').show();
-            $('#discount-row').show();
-            updateDiscountHelp();
-        }
-        calculateTotals();
-    });
-
-    // Update discount help text
-    function updateDiscountHelp() {
-        const discountType = $('#discount_type').val();
-        if (discountType === 'percentage') {
-            $('#discount-help').text('Enter discount percentage (0-100)');
-        } else {
-            $('#discount-help').text('Enter discount amount');
-        }
-    }
 
     // Calculate invoice totals
     function calculateTotals() {
@@ -315,16 +281,8 @@ $(document).ready(function() {
         });
 
         // Apply discount
-        let discount = 0;
-        const discountType = $('#discount_type').val();
-        const discountValue = parseFloat($('#discount_value').val()) || 0;
-
-        if (discountType === 'percentage') {
-            discount = subtotal * (discountValue / 100);
-        } else if (discountType === 'fixed') {
-            discount = discountValue;
-        }
-
+        let discount = parseFloat($('#discount_amount').val()) || 0;
+        
         const total = subtotal + totalTax - discount;
 
         // Update display
@@ -335,6 +293,7 @@ $(document).ready(function() {
             $('#discount-amount').text('-$' + discount.toFixed(2));
             $('#discount-row').show();
         } else {
+            $('#discount-amount').text('-$0.00');
             $('#discount-row').hide();
         }
         

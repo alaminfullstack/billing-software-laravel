@@ -7,11 +7,6 @@ use Illuminate\Http\Request;
 
 class TaxController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index(Request $request)
     {
         $taxes = Tax::when($request->search, function ($query, $search) {

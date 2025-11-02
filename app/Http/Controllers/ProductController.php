@@ -31,7 +31,10 @@ class ProductController extends Controller
                          ->paginate(15)
                          ->withQueryString();
 
-        $categories = Category::products()->orderBy('name')->get();
+        $categories = Category::where('type', 'product')
+                             ->where('is_active', true)
+                             ->orderBy('name')
+                             ->get();
 
         return view('products.index', compact('products', 'categories'));
     }
@@ -56,20 +59,29 @@ class ProductController extends Controller
                          ->paginate(15)
                          ->withQueryString();
 
-        $categories = Category::services()->orderBy('name')->get();
+        $categories = Category::where('type', 'service')
+                             ->where('is_active', true)
+                             ->orderBy('name')
+                             ->get();
 
         return view('services.index', compact('services', 'categories'));
     }
 
     public function createProduct()
     {
-        $categories = Category::products()->orderBy('name')->get();
+        $categories = Category::where('type', 'product')
+                             ->where('is_active', true)
+                             ->orderBy('name')
+                             ->get();
         return view('products.create', compact('categories'));
     }
 
     public function createService()
     {
-        $categories = Category::services()->orderBy('name')->get();
+        $categories = Category::where('type', 'service')
+                             ->where('is_active', true)
+                             ->orderBy('name')
+                             ->get();
         return view('services.create', compact('categories'));
     }
 

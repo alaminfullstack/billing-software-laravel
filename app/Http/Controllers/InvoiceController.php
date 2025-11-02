@@ -10,6 +10,7 @@ use App\Models\InvoiceItem;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -50,7 +51,7 @@ class InvoiceController extends Controller
 
     public function show(Invoice $invoice)
     {
-        $this->authorize('view', $invoice);
+        Gate::authorize('view', $invoice);
         
         $invoice->load('customer', 'items.product', 'items.service', 'payments');
         
@@ -59,7 +60,7 @@ class InvoiceController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Invoice::class);
+        Gate::authorize('create', Invoice::class);
         
         $customers = Customer::where('user_id', Auth::id())
                             ->where('status', 'active')
@@ -74,7 +75,7 @@ class InvoiceController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize('create', Invoice::class);
+        Gate::authorize('create', Invoice::class);
 
         $validated = $request->validate([
             'customer_id' => 'required|exists:customers,id',
@@ -157,7 +158,7 @@ class InvoiceController extends Controller
 
     public function edit(Invoice $invoice)
     {
-        $this->authorize('update', $invoice);
+        Gate::authorize('update', $invoice);
         
         if ($invoice->status !== 'draft') {
             return back()->with('error', 'Only draft invoices can be edited.');
@@ -177,7 +178,7 @@ class InvoiceController extends Controller
 
     public function update(Request $request, Invoice $invoice)
     {
-        $this->authorize('update', $invoice);
+        Gate::authorize('update', $invoice);
 
         if ($invoice->status !== 'draft') {
             return back()->with('error', 'Only draft invoices can be updated.');
@@ -260,7 +261,7 @@ class InvoiceController extends Controller
 
     public function destroy(Invoice $invoice)
     {
-        $this->authorize('delete', $invoice);
+        Gate::authorize('delete', $invoice);
 
         if ($invoice->status !== 'draft') {
             return back()->with('error', 'Only draft invoices can be deleted.');
@@ -274,7 +275,7 @@ class InvoiceController extends Controller
 
     public function send(Invoice $invoice)
     {
-        $this->authorize('send', $invoice);
+        Gate::authorize('send', $invoice);
 
         if ($invoice->status === 'draft') {
             $invoice->update(['status' => 'sent']);
@@ -284,9 +285,22 @@ class InvoiceController extends Controller
         return back()->with('error', 'Invoice cannot be sent.');
     }
 
+    public function approve(Invoice $invoice)
+    {
+        Gate::authorize('update', $invoice);
+
+        if ($invoice->status !== 'draft') {
+            return back()->with('error', 'Only draft invoices can be approved.');
+        }
+
+        $invoice->update(['status' => 'approved']);
+
+        return back()->with('success', 'Invoice approved successfully.');
+    }
+
     public function markAsPaid(Invoice $invoice)
     {
-        $this->authorize('markAsPaid', $invoice);
+        Gate::authorize('markAsPaid', $invoice);
 
         $invoice->update([
             'status' => 'paid',

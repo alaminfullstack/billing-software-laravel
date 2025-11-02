@@ -326,7 +326,7 @@
                 <h5 class="modal-title">Export Products & Services</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form method="GET" action="{{ route('products.export') }}">
+            <form method="GET" action="">
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="export_format" class="form-label">Export Format</label>

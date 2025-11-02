@@ -59,6 +59,7 @@ Route::middleware('auth')->group(function () {
     // Invoices
     Route::resource('invoices', InvoiceController::class);
     Route::patch('/invoices/{invoice}/send', [InvoiceController::class, 'send'])->name('invoices.send');
+    Route::post('/invoices/{invoice}/approve', [InvoiceController::class, 'approve'])->name('invoices.approve');
     Route::patch('/invoices/{invoice}/mark-paid', [InvoiceController::class, 'markAsPaid'])->name('invoices.mark-paid');
     
     // Payments

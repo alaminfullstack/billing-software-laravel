@@ -14,11 +14,6 @@ use Illuminate\Support\Str;
 
 class QuoteController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function index(Request $request)
     {
         $quotes = Quote::with(['customer', 'creator', 'items'])
