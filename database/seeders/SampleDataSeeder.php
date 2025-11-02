@@ -553,8 +553,10 @@ class SampleDataSeeder extends Seeder
                 ]);
             }
         }
+    
+
         
-       // Create expense categories first
+        // Create expense categories first
         $categories = [
             ['name' => 'Office Supplies', 'description' => 'Office materials and supplies'],
             ['name' => 'Rent', 'description' => 'Office rent payments'],

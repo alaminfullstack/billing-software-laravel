@@ -18,7 +18,8 @@ class DatabaseSeeder extends Seeder
         // - Users with roles assigned
         // - Sample financial data for testing reports
         $this->call([
-            SampleDataSeeder::class,
+            CurrencySeeder::class,
+           // SampleDataSeeder::class,
         ]);
         
         echo "Database seeding completed!\n";

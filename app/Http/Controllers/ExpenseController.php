@@ -6,6 +6,7 @@ use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class ExpenseController extends Controller
@@ -60,7 +61,7 @@ class ExpenseController extends Controller
 
     public function show(Expense $expense)
     {
-        $this->authorize('view', $expense);
+        Gate::authorize('view', $expense);
         
         $expense->load('category', 'creator', 'supplier');
         
@@ -69,7 +70,7 @@ class ExpenseController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Expense::class);
+        Gate::authorize('create', Expense::class);
         
         $categories = ExpenseCategory::orderBy('name')->get();
         $suppliers = \App\Models\Supplier::orderBy('name')->get();
@@ -79,7 +80,7 @@ class ExpenseController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize('create', Expense::class);
+        Gate::authorize('create', Expense::class);
 
         $validated = $request->validate([
             'category_id' => 'required|exists:expense_categories,id',
@@ -93,6 +94,7 @@ class ExpenseController extends Controller
         ]);
 
         $validated['created_by'] = Auth::id();
+        $validated['expense_category_id'] = $request->category_id;
         $validated['receipt_file'] = null;
 
         if ($request->hasFile('receipt_file')) {
@@ -107,7 +109,7 @@ class ExpenseController extends Controller
 
     public function edit(Expense $expense)
     {
-        $this->authorize('update', $expense);
+        Gate::authorize('update', $expense);
         
         $categories = ExpenseCategory::orderBy('name')->get();
         $suppliers = \App\Models\Supplier::orderBy('name')->get();
@@ -117,7 +119,7 @@ class ExpenseController extends Controller
 
     public function update(Request $request, Expense $expense)
     {
-        $this->authorize('update', $expense);
+        Gate::authorize('update', $expense);
 
         $validated = $request->validate([
             'category_id' => 'required|exists:expense_categories,id',
@@ -148,7 +150,7 @@ class ExpenseController extends Controller
 
     public function destroy(Expense $expense)
     {
-        $this->authorize('delete', $expense);
+        Gate::authorize('delete', $expense);
 
         // Delete receipt file if exists
         if ($expense->receipt_file) {
@@ -163,7 +165,7 @@ class ExpenseController extends Controller
 
     public function downloadReceipt(Expense $expense)
     {
-        $this->authorize('view', $expense);
+        Gate::authorize('view', $expense);
 
         if (!$expense->receipt_file || !Storage::disk('public')->exists($expense->receipt_file)) {
             return back()->with('error', 'Receipt file not found.');
