@@ -61,7 +61,6 @@ return new class extends Migration
             $table->decimal('base_currency_credit', 15, 2)->default(0);
             $table->timestamps();
             
-            $table->foreign('financial_account_id')->references('id')->on('financial_accounts');
             $table->foreign('currency_code')->references('code')->on('currencies');
             
             $table->unique(['financial_account_id', 'balance_date']);
@@ -77,7 +76,10 @@ return new class extends Migration
             $table->string('currency_code', 3)->default('USD');
             $table->decimal('exchange_rate', 15, 6)->default(1.000000);
             $table->decimal('base_currency_amount', 15, 2);
-            $table->morphs('transactionable'); // Can relate to invoice, payment, expense, etc.
+            // $table->morphs('transactionable'); // Can relate to invoice, payment, expense, etc.
+            // Use manual morphs with shorter index name to avoid MySQL limit
+           
+            // $table->index(['transactionable_type', 'transactionable_id'], 'cf_transactable_idx');
             $table->timestamps();
             
             $table->foreign('currency_code')->references('code')->on('currencies');

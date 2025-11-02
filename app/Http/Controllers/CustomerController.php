@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class CustomerController extends Controller
 {
@@ -39,7 +40,7 @@ class CustomerController extends Controller
 
     public function show(Customer $customer)
     {
-        $this->authorize('view', $customer);
+        Gate::authorize('view', $customer);
         
         $customer->load('user', 'invoices.payments');
         
@@ -48,14 +49,14 @@ class CustomerController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Customer::class);
+        Gate::authorize('create', Customer::class);
         
         return view('customers.create');
     }
 
     public function store(Request $request)
     {
-        $this->authorize('create', Customer::class);
+        Gate::authorize('create', Customer::class);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -82,14 +83,14 @@ class CustomerController extends Controller
 
     public function edit(Customer $customer)
     {
-        $this->authorize('update', $customer);
+        Gate::authorize('update', $customer);
         
         return view('customers.edit', compact('customer'));
     }
 
     public function update(Request $request, Customer $customer)
     {
-        $this->authorize('update', $customer);
+        Gate::authorize('update', $customer);
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
@@ -114,7 +115,7 @@ class CustomerController extends Controller
 
     public function destroy(Customer $customer)
     {
-        $this->authorize('delete', $customer);
+        Gate::authorize('delete', $customer);
 
         $customer->delete();
 

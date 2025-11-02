@@ -2,6 +2,10 @@
 
 @section('title', 'Categories')
 
+@php
+use Illuminate\Support\Str;
+@endphp
+
 @section('content')
 <div class="container-fluid">
     <div class="row">
@@ -303,6 +307,7 @@
 </style>
 
 @section('scripts')
+<script>
 function filterByType(type) {
     const url = new URL(window.location);
     if (type === 'all') {
@@ -318,5 +323,22 @@ function exportCategories() {
     url.searchParams.set('export', 'true');
     window.open(url.toString(), '_blank');
 }
+
+// Initialize tabs on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Add active class to current tab based on URL parameter
+    const currentType = new URLSearchParams(window.location.search).get('type') || 'all';
+    const tabs = document.querySelectorAll('#categoryTabs .nav-link');
+    tabs.forEach(tab => {
+        tab.classList.remove('active');
+        if ((currentType === 'all' && !tab.getAttribute('onclick').includes('type'))
+            || (currentType === 'product' && tab.getAttribute('onclick').includes('product'))
+            || (currentType === 'expense' && tab.getAttribute('onclick').includes('expense'))
+            || (currentType === 'income' && tab.getAttribute('onclick').includes('income'))) {
+            tab.classList.add('active');
+        }
+    });
+});
+</script>
 @endsection
 @endsection

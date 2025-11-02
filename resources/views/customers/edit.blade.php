@@ -345,7 +345,7 @@
                                 <div class="card-body">
                                     @php
                                         $totalInvoices = $customer->invoices()->count();
-                                        $totalAmount = $customer->invoices()->sum('total');
+                                        $totalAmount = $customer->invoices()->sum('total_amount');
                                         $amountPaid = $customer->payments()->sum('amount');
                                         $balanceDue = $totalAmount - $amountPaid;
                                     @endphp

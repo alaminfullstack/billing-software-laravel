@@ -39,7 +39,11 @@ class Customer extends Model
 
     public function invoices()
     {
-        return $this->hasMany(Invoice::class);
+        return $this->hasMany(Invoice::class, 'customer_id');
+    }
+
+    public function payments(){
+        return $this->belongsToMany(Payment::class, Invoice::class, 'id', 'customer_id');
     }
 
     // Scopes

@@ -6,7 +6,6 @@ use App\Models\Invoice;
 use App\Models\Payment;
 use App\Models\Expense;
 use App\Models\Customer;
-use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Service;
 use Illuminate\Http\Request;
