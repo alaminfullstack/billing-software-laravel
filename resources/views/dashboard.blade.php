@@ -225,7 +225,7 @@
                                                 {{ ucfirst($invoice->status) }}
                                             </span>
                                             <div class="fw-bold">${{ number_format($invoice->total, 2) }}</div>
-                                            <small class="text-muted">{{ $invoice->invoice_date->format('M d, Y') }}</small>
+                                            <small class="text-muted">{{ \Carbon\Carbon::parse($invoice->invoice_date)->format('M d, Y') }}</small>
                                         </td>
                                         <td class="text-center">
                                             <a href="{{ route('invoices.show', $invoice) }}" class="btn btn-sm btn-outline-primary">

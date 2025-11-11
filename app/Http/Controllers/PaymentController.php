@@ -7,6 +7,7 @@ use App\Models\Invoice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Carbon\Carbon;
 
 class PaymentController extends Controller
@@ -46,7 +47,7 @@ class PaymentController extends Controller
 
     public function create(Request $request, Invoice $invoice = null)
     {
-        $this->authorize('create', Payment::class);
+        Gate::authorize('create', Payment::class);
 
         $invoices = Invoice::where('created_by', Auth::id())
                           ->where('balance_amount', '>', 0)
@@ -62,7 +63,7 @@ class PaymentController extends Controller
 
     public function store(Request $request)
     {
-        $this->authorize('create', Payment::class);
+        Gate::authorize('create', Payment::class);
 
         $validated = $request->validate([
             'invoice_id' => 'required|exists:invoices,id',
@@ -125,7 +126,7 @@ class PaymentController extends Controller
 
     public function show(Payment $payment)
     {
-        $this->authorize('view', $payment);
+        Gate::authorize('view', $payment);
         
         $payment->load('invoice.customer', 'creator');
         

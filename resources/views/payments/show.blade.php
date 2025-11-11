@@ -61,7 +61,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <h6 class="text-muted">Payment Date</h6>
-                                        <p>{{ $payment->payment_date->format('M d, Y') }}</p>
+                                        <p>{{ \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') }}</p>
                                     </div>
                                     <div class="col-md-6">
                                         <h6 class="text-muted">Payment Method</h6>
@@ -134,7 +134,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <h6 class="text-muted">Invoice Date</h6>
-                                            <p>{{ $payment->invoice->invoice_date->format('M d, Y') }}</p>
+                                            <p>{{ \Carbon\Carbon::parse($payment->invoice->invoice_date)->format('M d, Y') }}</p>
                                         </div>
                                     </div>
                                     
@@ -271,10 +271,10 @@
                                 @endif
 
                                 <div class="btn-group w-100">
-                                    <a href="{{ route('payments.print', $payment) }}" class="btn btn-outline-secondary">
+                                    <a href="" class="btn btn-outline-secondary">
                                         <i class="fas fa-print"></i> Print
                                     </a>
-                                    <a href="{{ route('payments.pdf', $payment) }}" class="btn btn-outline-secondary">
+                                    <a href="" class="btn btn-outline-secondary">
                                         <i class="fas fa-download"></i> PDF
                                     </a>
                                 </div>

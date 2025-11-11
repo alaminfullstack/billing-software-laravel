@@ -293,7 +293,7 @@ class InvoiceController extends Controller
             return back()->with('error', 'Only draft invoices can be approved.');
         }
 
-        $invoice->update(['status' => 'approved']);
+        $invoice->update(['status' => 'sent']);
 
         return back()->with('success', 'Invoice approved successfully.');
     }
